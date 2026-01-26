@@ -1,6 +1,35 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
 import { useIsMobile } from '@/hooks/use-mobile';
+
+// Separate component for telemetry dots to properly use hooks
+const TelemetryDot = ({ 
+  y, 
+  index, 
+  scrollYProgress 
+}: { 
+  y: number; 
+  index: number; 
+  scrollYProgress: MotionValue<number>;
+}) => {
+  const opacity = useTransform(
+    scrollYProgress,
+    [y / 550 - 0.05, y / 550, y / 550 + 0.05],
+    [0, 0.6, 0.3]
+  );
+
+  return (
+    <motion.circle
+      cx={index % 4 === 0 ? 15 + (index * 3) % 50 : 20 + (index * 7) % 45}
+      cy={y}
+      r="0.3"
+      fill="hsl(var(--primary))"
+      style={{ opacity }}
+    />
+  );
+};
+
+const TELEMETRY_Y_POSITIONS = [20, 45, 70, 95, 120, 145, 180, 205, 235, 270, 300, 330, 360, 390, 420, 450, 480];
 
 const TrackLine = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -13,6 +42,8 @@ const TrackLine = () => {
   // Progressive drawing effect - line draws as user scrolls
   const pathLength = useTransform(scrollYProgress, [0, 0.95], [0, 1]);
   const opacity = useTransform(scrollYProgress, [0, 0.05, 0.9, 1], [0, 0.4, 0.4, 0]);
+  const secondaryOpacity = useTransform(scrollYProgress, [0, 0.05, 0.9, 1], [0, 0.15, 0.15, 0]);
+  const glowTop = useTransform(scrollYProgress, [0, 1], ['0%', '85%']);
 
   // Simplified straight line for mobile
   if (isMobile) {
@@ -90,20 +121,12 @@ const TrackLine = () => {
         />
 
         {/* Telemetry dots along the path */}
-        {[20, 45, 70, 95, 120, 145, 180, 205, 235, 270, 300, 330, 360, 390, 420, 450, 480].map((y, i) => (
-          <motion.circle
+        {TELEMETRY_Y_POSITIONS.map((y, i) => (
+          <TelemetryDot
             key={i}
-            cx={i % 4 === 0 ? 15 + (i * 3) % 50 : 20 + (i * 7) % 45}
-            cy={y}
-            r="0.3"
-            fill="hsl(var(--primary))"
-            style={{
-              opacity: useTransform(
-                scrollYProgress,
-                [y / 550 - 0.05, y / 550, y / 550 + 0.05],
-                [0, 0.6, 0.3]
-              ),
-            }}
+            y={y}
+            index={i}
+            scrollYProgress={scrollYProgress}
           />
         ))}
 
@@ -148,7 +171,7 @@ const TrackLine = () => {
           strokeDasharray="0.5 2"
           style={{
             pathLength,
-            opacity: useTransform(scrollYProgress, [0, 0.05, 0.9, 1], [0, 0.15, 0.15, 0]),
+            opacity: secondaryOpacity,
           }}
         />
       </svg>
@@ -157,7 +180,7 @@ const TrackLine = () => {
       <motion.div
         className="absolute left-0 w-full h-32 pointer-events-none"
         style={{
-          top: useTransform(scrollYProgress, [0, 1], ['0%', '85%']),
+          top: glowTop,
           background: 'radial-gradient(ellipse at 20% 50%, hsla(var(--primary), 0.08) 0%, transparent 50%)',
         }}
       />
