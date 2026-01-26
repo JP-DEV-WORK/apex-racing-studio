@@ -1,34 +1,39 @@
 import { useRef } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { Zap, Settings, Trophy, Heart } from 'lucide-react';
+import AnimatedCounter from '@/components/AnimatedCounter';
 
 const differentials = [
   {
     icon: Zap,
     title: "Agilidade",
     description: "Entrega rápida sem comprometer a qualidade. Como um pit stop perfeito.",
-    stat: "48h",
+    statValue: 48,
+    statSuffix: "h",
     statLabel: "Entrega Express",
   },
   {
     icon: Settings,
     title: "Equipamento",
     description: "Câmeras profissionais, drones de alta velocidade e estabilizadores de ponta.",
-    stat: "8K",
+    statValue: 8,
+    statSuffix: "K",
     statLabel: "Resolução Máxima",
   },
   {
     icon: Trophy,
     title: "Experiência",
     description: "Anos de vivência no automobilismo, entendendo cada nuance da pista.",
-    stat: "200+",
+    statValue: 200,
+    statSuffix: "+",
     statLabel: "Projetos Realizados",
   },
   {
     icon: Heart,
     title: "Paixão",
     description: "Amamos velocidade tanto quanto você. Isso reflete em cada frame.",
-    stat: "100%",
+    statValue: 100,
+    statSuffix: "%",
     statLabel: "Dedicação",
   },
 ];
@@ -109,7 +114,13 @@ const PitStopSection = () => {
                     </div>
                     <div className="text-right">
                       <div className="text-3xl md:text-4xl font-archivo font-black text-primary">
-                        {item.stat}
+                        <AnimatedCounter
+                          end={item.statValue}
+                          suffix={item.statSuffix}
+                          duration={2000}
+                          delay={index * 150}
+                          isInView={isInView}
+                        />
                       </div>
                       <div className="text-xs uppercase tracking-wider text-muted-foreground">
                         {item.statLabel}
