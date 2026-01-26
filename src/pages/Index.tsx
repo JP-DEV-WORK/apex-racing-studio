@@ -7,6 +7,7 @@ import PortfolioSection from '@/components/PortfolioSection';
 import TeamSection from '@/components/TeamSection';
 import FooterSection from '@/components/FooterSection';
 import FilmGrain from '@/components/FilmGrain';
+import TrackLine from '@/components/TrackLine';
 
 const Index = () => {
   useEffect(() => {
@@ -16,6 +17,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* Track Line - Racing line visual connector */}
+      <TrackLine />
+      
       {/* Film Grain Overlay */}
       <FilmGrain />
       
