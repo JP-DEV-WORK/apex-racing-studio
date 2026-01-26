@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
+import AnimatedCounter from '@/components/AnimatedCounter';
 
 const TeamSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -42,7 +43,15 @@ const TeamSection = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="absolute -bottom-8 left-8 bg-primary p-6"
             >
-              <div className="text-4xl font-archivo font-black text-primary-foreground">5+</div>
+              <div className="text-4xl font-archivo font-black text-primary-foreground">
+                <AnimatedCounter
+                  end={5}
+                  suffix="+"
+                  duration={1500}
+                  delay={400}
+                  isInView={isInView}
+                />
+              </div>
               <div className="text-sm uppercase tracking-wider text-primary-foreground/80">
                 Anos de Experiência
               </div>
@@ -86,20 +95,41 @@ const TeamSection = () => {
 
             {/* Team values */}
             <div className="grid grid-cols-3 gap-6 mt-12">
-              {[
-                { value: "100%", label: "Dedicação" },
-                { value: "24/7", label: "Disponibilidade" },
-                { value: "∞", label: "Criatividade" },
-              ].map((item) => (
-                <div key={item.label} className="text-center">
-                  <div className="text-2xl md:text-3xl font-archivo font-black text-primary">
-                    {item.value}
-                  </div>
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
-                    {item.label}
-                  </div>
+              <div className="text-center">
+                <div className="text-2xl md:text-3xl font-archivo font-black text-primary">
+                  <AnimatedCounter
+                    end={100}
+                    suffix="%"
+                    duration={2000}
+                    isInView={isInView}
+                  />
                 </div>
-              ))}
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
+                  Dedicação
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl md:text-3xl font-archivo font-black text-primary">
+                  <AnimatedCounter
+                    end={24}
+                    suffix="/7"
+                    duration={2000}
+                    delay={150}
+                    isInView={isInView}
+                  />
+                </div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
+                  Disponibilidade
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl md:text-3xl font-archivo font-black text-primary">
+                  ∞
+                </div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
+                  Criatividade
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
