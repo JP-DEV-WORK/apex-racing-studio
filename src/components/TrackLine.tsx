@@ -6,37 +6,30 @@ import { useIsMobile } from '@/hooks/use-mobile';
 const TelemetryDot = ({ 
   y, 
   index, 
-  scrollYProgress,
-  isMobile = false
+  scrollYProgress 
 }: { 
   y: number; 
   index: number; 
   scrollYProgress: MotionValue<number>;
-  isMobile?: boolean;
 }) => {
-  const maxY = isMobile ? 600 : 550;
   const opacity = useTransform(
     scrollYProgress,
-    [y / maxY - 0.05, y / maxY, y / maxY + 0.05],
+    [y / 550 - 0.05, y / 550, y / 550 + 0.05],
     [0, 0.6, 0.3]
   );
 
-  const cx = isMobile 
-    ? 50 + (index % 2 === 0 ? -5 : 5) 
-    : (index % 4 === 0 ? 15 + (index * 3) % 50 : 20 + (index * 7) % 45);
-
   return (
     <motion.circle
-      cx={cx}
+      cx={index % 4 === 0 ? 15 + (index * 3) % 50 : 20 + (index * 7) % 45}
       cy={y}
-      r={isMobile ? "0.4" : "0.3"}
+      r="0.3"
       fill="hsl(var(--primary))"
       style={{ opacity }}
     />
   );
 };
 
-const TELEMETRY_Y_POSITIONS = [20, 45, 70, 95, 120, 145, 180, 205, 235, 270, 300, 330, 360, 390, 420, 450, 480, 510, 540, 570];
+const TELEMETRY_Y_POSITIONS = [20, 45, 70, 95, 120, 145, 180, 205, 235, 270, 300, 330, 360, 390, 420, 450, 480];
 
 const TrackLine = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -48,124 +41,19 @@ const TrackLine = () => {
 
   // Progressive drawing effect - line draws as user scrolls
   const pathLength = useTransform(scrollYProgress, [0, 0.95], [0, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.05, 0.9, 1], [0, 0.5, 0.5, 0]);
-  const secondaryOpacity = useTransform(scrollYProgress, [0, 0.05, 0.9, 1], [0, 0.2, 0.2, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.05, 0.9, 1], [0, 0.4, 0.4, 0]);
+  const secondaryOpacity = useTransform(scrollYProgress, [0, 0.05, 0.9, 1], [0, 0.15, 0.15, 0]);
   const glowTop = useTransform(scrollYProgress, [0, 1], ['0%', '85%']);
 
-  // Mobile: Animated racing line optimized for mobile
+  // Simplified straight line for mobile
   if (isMobile) {
     return (
       <div 
         ref={containerRef}
-        className="fixed inset-0 pointer-events-none z-[1] overflow-hidden"
+        className="fixed left-4 top-0 w-px h-full pointer-events-none z-0"
+        style={{ opacity: 0.2 }}
       >
-        <svg
-          className="absolute top-0 left-0 w-full h-[600vh]"
-          viewBox="0 0 100 600"
-          preserveAspectRatio="none"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {/* Mobile racing line - centered S-curve pattern */}
-          <motion.path
-            d="
-              M 50 0
-              L 50 30
-              Q 50 40, 35 50
-              L 25 60
-              Q 15 70, 15 80
-              L 15 110
-              Q 15 120, 25 130
-              L 45 145
-              Q 55 155, 55 165
-              L 55 200
-              Q 55 210, 45 220
-              L 30 235
-              Q 20 245, 20 255
-              L 20 290
-              Q 20 300, 30 310
-              L 50 325
-              Q 60 335, 60 345
-              L 60 380
-              Q 60 390, 50 400
-              L 35 415
-              Q 25 425, 25 435
-              L 25 470
-              Q 25 480, 35 490
-              L 55 505
-              Q 65 515, 65 525
-              L 65 560
-              Q 65 570, 55 580
-              L 50 590
-              L 50 600
-            "
-            stroke="hsl(var(--primary))"
-            strokeWidth="0.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{
-              pathLength,
-              opacity,
-            }}
-          />
-
-          {/* Mobile telemetry dots */}
-          {TELEMETRY_Y_POSITIONS.map((y, i) => (
-            <TelemetryDot
-              key={i}
-              y={y}
-              index={i}
-              scrollYProgress={scrollYProgress}
-              isMobile={true}
-            />
-          ))}
-
-          {/* Secondary dashed line for mobile */}
-          <motion.path
-            d="
-              M 80 0
-              L 80 60
-              Q 80 70, 75 80
-              L 70 95
-              Q 65 105, 65 115
-              L 65 160
-              Q 65 170, 70 180
-              L 75 195
-              Q 80 205, 80 215
-              L 80 260
-              Q 80 270, 75 280
-              L 70 295
-              Q 65 305, 65 315
-              L 65 360
-              Q 65 370, 70 380
-              L 75 395
-              Q 80 405, 80 415
-              L 80 460
-              Q 80 470, 75 480
-              L 70 495
-              Q 65 505, 65 515
-              L 65 560
-              L 65 600
-            "
-            stroke="hsl(var(--primary))"
-            strokeWidth="0.1"
-            strokeLinecap="round"
-            strokeDasharray="0.8 3"
-            style={{
-              pathLength,
-              opacity: secondaryOpacity,
-            }}
-          />
-        </svg>
-
-        {/* Subtle glow effect at current scroll position */}
-        <motion.div
-          className="absolute left-0 w-full h-40 pointer-events-none"
-          style={{
-            top: glowTop,
-            background: 'radial-gradient(ellipse at 30% 50%, hsla(var(--primary), 0.1) 0%, transparent 60%)',
-          }}
-        />
+        <div className="w-full h-full bg-gradient-to-b from-transparent via-primary to-transparent" />
       </div>
     );
   }
@@ -174,7 +62,7 @@ const TrackLine = () => {
   return (
     <div 
       ref={containerRef}
-      className="fixed inset-0 pointer-events-none z-[1] overflow-hidden"
+      className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
     >
       <svg
         className="absolute top-0 left-0 w-full h-[500vh]"
@@ -233,7 +121,7 @@ const TrackLine = () => {
         />
 
         {/* Telemetry dots along the path */}
-        {TELEMETRY_Y_POSITIONS.slice(0, 17).map((y, i) => (
+        {TELEMETRY_Y_POSITIONS.map((y, i) => (
           <TelemetryDot
             key={i}
             y={y}
