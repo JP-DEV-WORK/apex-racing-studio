@@ -2,10 +2,16 @@ import { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import MagneticButton from './MagneticButton';
+import { useIsMobile } from '@/hooks/use-mobile';
+import heroVideo from '@/assets/hero-video.mp4';
+import heroFallback from '@/assets/hero-fallback.jpg';
 
 const HeroSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  const isMobile = useIsMobile();
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -19,6 +25,15 @@ const HeroSection = () => {
     const timer = setTimeout(() => setIsLoaded(true), 100);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    // Play video when it's loaded
+    if (videoRef.current && videoLoaded) {
+      videoRef.current.play().catch(() => {
+        // Autoplay may be blocked, that's ok
+      });
+    }
+  }, [videoLoaded]);
 
   const scrollToServices = () => {
     document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
@@ -35,16 +50,32 @@ const HeroSection = () => {
         style={{ y }}
         className="absolute inset-0 w-full h-full"
       >
-        {/* Placeholder video - replace with actual video */}
-        <div className="absolute inset-0 bg-gradient-to-br from-carbon-dark via-background to-carbon">
-          {/* Simulated video movement effect */}
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute w-[200%] h-[200%] -top-1/2 -left-1/2 bg-[radial-gradient(ellipse_at_center,_hsla(0,100%,50%,0.1)_0%,_transparent_70%)] animate-pulse" />
-          </div>
-        </div>
+        {/* Fallback Image (shown on mobile or before video loads) */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${heroFallback})` }}
+        />
         
-        {/* Dark Overlay */}
-        <div className="absolute inset-0 video-overlay" />
+        {/* Video Element (hidden on mobile for performance) */}
+        {!isMobile && (
+          <video
+            ref={videoRef}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              videoLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            onLoadedData={() => setVideoLoaded(true)}
+          >
+            <source src={heroVideo} type="video/mp4" />
+          </video>
+        )}
+        
+        {/* Dark Overlay - 60% opacity for perfect text readability */}
+        <div className="absolute inset-0 bg-background/60" />
       </motion.div>
 
       {/* Content */}
