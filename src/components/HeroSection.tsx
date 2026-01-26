@@ -56,23 +56,21 @@ const HeroSection = () => {
           style={{ backgroundImage: `url(${heroFallback})` }}
         />
         
-        {/* Video Element (hidden on mobile for performance) */}
-        {!isMobile && (
-          <video
-            ref={videoRef}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-              videoLoaded ? 'opacity-100' : 'opacity-0'
-            }`}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            onLoadedData={() => setVideoLoaded(true)}
-          >
-            <source src={heroVideo} type="video/mp4" />
-          </video>
-        )}
+        {/* Video Element */}
+        <video
+          ref={videoRef}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+            videoLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          onLoadedData={() => setVideoLoaded(true)}
+        >
+          <source src={heroVideo} type="video/mp4" />
+        </video>
         
         {/* Dark Overlay - 60% opacity for perfect text readability */}
         <div className="absolute inset-0 bg-background/60" />
