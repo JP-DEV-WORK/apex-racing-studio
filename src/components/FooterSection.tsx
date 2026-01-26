@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Instagram, Youtube, Mail, Send, Loader2 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -43,20 +42,33 @@ const FooterSection = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.from('leads').insert({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        phone: formData.phone?.trim() || null,
-        message: formData.message.trim(),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/submit-lead`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: formData.name.trim(),
+            email: formData.email.trim(),
+            phone: formData.phone?.trim() || null,
+            message: formData.message.trim(),
+          }),
+        }
+      );
 
-      if (error) throw error;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao enviar mensagem');
+      }
 
       toast.success('Mensagem enviada com sucesso! Entraremos em contato em breve.');
       setFormData({ name: '', email: '', phone: '', message: '' });
     } catch (error) {
-      console.error('Error submitting form:', error);
-      toast.error('Erro ao enviar mensagem. Tente novamente.');
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao enviar mensagem. Tente novamente.';
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
