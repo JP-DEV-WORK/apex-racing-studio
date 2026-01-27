@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import AnimatedCounter from '@/components/AnimatedCounter';
+import InfinityCounter from '@/components/InfinityCounter';
 
 const TeamSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -124,7 +125,10 @@ const TeamSection = () => {
               </div>
               <div className="text-center">
                 <div className="text-2xl md:text-3xl font-archivo font-black text-primary">
-                  ∞
+                  <InfinityCounter
+                    isInView={isInView}
+                    duration={2200}
+                  />
                 </div>
                 <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
                   Criatividade
