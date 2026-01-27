@@ -15,6 +15,7 @@ const contactSchema = z.object({
   email: z.string().trim().email("Email inválido").max(255, "Email muito longo"),
   phone: z.string().trim().max(20, "Telefone muito longo").optional(),
   message: z.string().trim().min(1, "Mensagem é obrigatória").max(1000, "Mensagem muito longa"),
+  website: z.string().max(0).optional(), // Honeypot field - must be empty
 });
 
 const FooterSection = () => {
@@ -26,6 +27,7 @@ const FooterSection = () => {
     email: '',
     phone: '',
     message: '',
+    website: '', // Honeypot field
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,6 +56,7 @@ const FooterSection = () => {
             email: formData.email.trim(),
             phone: formData.phone?.trim() || null,
             message: formData.message.trim(),
+            website: formData.website, // Honeypot field
           }),
         }
       );
@@ -65,7 +68,7 @@ const FooterSection = () => {
       }
 
       toast.success('Mensagem enviada com sucesso! Entraremos em contato em breve.');
-      setFormData({ name: '', email: '', phone: '', message: '' });
+      setFormData({ name: '', email: '', phone: '', message: '', website: '' });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erro ao enviar mensagem. Tente novamente.';
       toast.error(errorMessage);
@@ -146,6 +149,28 @@ const FooterSection = () => {
                   placeholder="Telefone (opcional)"
                   className="w-full bg-transparent border-b border-border py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
                   aria-label="Seu telefone (opcional)"
+                />
+              </div>
+
+              {/* Honeypot field - hidden from users, only bots fill this */}
+              <div 
+                aria-hidden="true" 
+                style={{ 
+                  position: 'absolute', 
+                  left: '-9999px', 
+                  opacity: 0, 
+                  height: 0, 
+                  overflow: 'hidden',
+                  pointerEvents: 'none',
+                }}
+              >
+                <input
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={formData.website}
+                  onChange={handleChange}
                 />
               </div>
 
