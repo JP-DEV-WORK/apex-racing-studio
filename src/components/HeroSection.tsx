@@ -42,7 +42,7 @@ const HeroSection = () => {
   return (
     <section 
       ref={containerRef}
-      className="relative h-screen w-full overflow-hidden"
+      className="relative h-screen w-full max-w-full overflow-hidden"
       aria-label="Hero section"
     >
       {/* Video Background */}
@@ -79,9 +79,9 @@ const HeroSection = () => {
       {/* Content */}
       <motion.div 
         style={{ opacity }}
-        className="relative z-10 h-full flex flex-col justify-center items-center px-6 md:px-12"
+        className="relative z-10 h-full flex flex-col justify-center items-center px-4 md:px-12"
       >
-        <div className="max-w-5xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center w-full">
           {/* Pre-title */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}

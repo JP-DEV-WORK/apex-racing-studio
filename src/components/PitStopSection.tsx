@@ -52,7 +52,7 @@ const PitStopSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="relative py-32 px-6 md:px-12 overflow-hidden"
+      className="relative py-20 md:py-32 px-4 md:px-12 overflow-hidden"
       aria-labelledby="pitstop-title"
     >
       {/* Parallax Background */}

@@ -10,11 +10,11 @@ const TeamSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="relative py-32 px-6 md:px-12 bg-card"
+      className="relative py-20 md:py-32 px-4 md:px-12 bg-card overflow-hidden"
       aria-labelledby="team-title"
     >
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <div className="max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center">
           {/* Image */}
           <motion.div
             initial={{ opacity: 0, x: -60 }}

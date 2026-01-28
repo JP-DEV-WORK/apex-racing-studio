@@ -67,10 +67,10 @@ const PortfolioSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="relative py-32 px-6 md:px-12 bg-background"
+      className="relative py-20 md:py-32 px-4 md:px-12 bg-background overflow-hidden"
       aria-labelledby="portfolio-title"
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto w-full">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
