@@ -12,10 +12,11 @@ export const useCounterAnimation = (
   isInView: boolean,
   options: CounterOptions
 ) => {
-  const { end, duration = 2000, delay = 0, suffix = '', prefix = '' } = options;
+  const { end, duration = 3000, delay = 0, suffix = '', prefix = '' } = options;
   const [count, setCount] = useState(0);
   const [showSuffix, setShowSuffix] = useState(false);
   const hasAnimated = useRef(false);
+  const INTERNAL_PRECISION = 30;
 
   useEffect(() => {
     if (!isInView || hasAnimated.current) return;
@@ -33,10 +34,13 @@ export const useCounterAnimation = (
       }
       
       const progress = Math.min(elapsed / duration, 1);
-      // Ease-out cubic: accelerates fast, decelerates at the end
-      const easeOut = 1 - Math.pow(1 - progress, 3);
+      const eased = progress;
+      const internalSteps = end * INTERNAL_PRECISION;
+
       
-      const currentValue = Math.floor(easeOut * end);
+      const rawValue = eased * internalSteps;
+      const currentValue = Math.floor((rawValue / internalSteps) * end);
+
       setCount(currentValue);
       
       if (progress < 1) {

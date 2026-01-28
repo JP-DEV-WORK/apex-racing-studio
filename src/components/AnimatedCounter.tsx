@@ -14,7 +14,7 @@ const AnimatedCounter = ({
   end,
   suffix = '',
   prefix = '',
-  duration = 2000,
+  duration = 3000,
   delay = 0,
   isInView,
   className = '',

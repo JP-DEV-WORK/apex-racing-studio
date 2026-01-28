@@ -9,7 +9,7 @@ interface InfinityCounterProps {
 
 const InfinityCounter = ({
   isInView,
-  duration = 2000,
+  duration = 3000,
   className = '',
 }: InfinityCounterProps) => {
   const [count, setCount] = useState(0);
