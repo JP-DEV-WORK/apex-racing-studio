@@ -34,7 +34,7 @@ const ServicesSection = () => {
     <section 
       id="services"
       ref={sectionRef}
-      className="relative py-32 px-6 md:px-12 bg-background"
+      className="relative py-20 md:py-32 px-4 md:px-12 bg-background overflow-hidden"
       aria-labelledby="services-title"
     >
       {/* Background accent */}
