@@ -3,6 +3,7 @@ import { motion, useInView } from 'framer-motion';
 import { Instagram, Youtube, Mail, Send, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import WhatsAppButton from './WhatsAppButton';
 
 const socialLinks = [
   { icon: Instagram, href: "#", label: "Instagram" },
@@ -187,28 +188,32 @@ const FooterSection = () => {
                 />
               </div>
 
-              <motion.button
-                type="submit"
-                disabled={isSubmitting}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="group relative px-10 py-5 bg-primary text-primary-foreground font-archivo font-bold uppercase tracking-wider text-sm overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span className="absolute inset-0 bg-foreground transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
-                <span className="relative z-10 flex items-center gap-3 group-hover:text-background transition-colors duration-300">
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Enviando...
-                    </>
-                  ) : (
-                    <>
-                      Enviar Mensagem
-                      <Send className="w-5 h-5" />
-                    </>
-                  )}
-                </span>
-              </motion.button>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <motion.button
+                  type="submit"
+                  disabled={isSubmitting}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group relative px-10 py-5 bg-primary text-primary-foreground font-archivo font-bold uppercase tracking-wider text-sm overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="absolute inset-0 bg-foreground transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
+                  <span className="relative z-10 flex items-center gap-3 group-hover:text-background transition-colors duration-300">
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        Enviar Mensagem
+                        <Send className="w-5 h-5" />
+                      </>
+                    )}
+                  </span>
+                </motion.button>
+                
+                <WhatsAppButton />
+              </div>
             </form>
           </motion.div>
 
