@@ -1,5 +1,5 @@
-import { useRef, useEffect, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef, useEffect, useState, useCallback } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import MagneticButton from './MagneticButton';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -10,7 +10,8 @@ const HeroSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videoState, setVideoState] = useState<'loading' | 'ready' | 'playing' | 'error'>('loading');
+  const [showFallback, setShowFallback] = useState(true);
   const isMobile = useIsMobile();
   
   const { scrollYProgress } = useScroll({
@@ -21,19 +22,87 @@ const HeroSection = () => {
   const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
+  // Preload video for faster start
   useEffect(() => {
     const timer = setTimeout(() => setIsLoaded(true), 100);
+    
+    // Preload video in the background
+    const video = document.createElement('video');
+    video.preload = 'auto';
+    video.muted = true;
+    video.playsInline = true;
+    video.src = heroVideo;
+    
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    // Play video when it's loaded
-    if (videoRef.current && videoLoaded) {
-      videoRef.current.play().catch(() => {
-        // Autoplay may be blocked, that's ok
-      });
+  // Handle video playback with retry logic
+  const attemptVideoPlay = useCallback(async () => {
+    if (!videoRef.current) return;
+    
+    try {
+      // Ensure video is muted (required for autoplay)
+      videoRef.current.muted = true;
+      videoRef.current.playsInline = true;
+      
+      await videoRef.current.play();
+      setVideoState('playing');
+      
+      // Smooth transition: delay hiding fallback for seamless swap
+      setTimeout(() => {
+        setShowFallback(false);
+      }, 300);
+    } catch (error) {
+      console.warn('Video autoplay failed, keeping fallback:', error);
+      setVideoState('error');
+      // Keep fallback visible on autoplay failure
     }
-  }, [videoLoaded]);
+  }, []);
+
+  // Video event handlers
+  const handleVideoCanPlay = useCallback(() => {
+    setVideoState('ready');
+    attemptVideoPlay();
+  }, [attemptVideoPlay]);
+
+  const handleVideoError = useCallback(() => {
+    console.warn('Video failed to load');
+    setVideoState('error');
+    setShowFallback(true);
+  }, []);
+
+  // Retry video play on visibility change (mobile tab switching)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && videoRef.current) {
+        if (videoState === 'ready' || videoState === 'playing') {
+          attemptVideoPlay();
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [videoState, attemptVideoPlay]);
+
+  // Handle user interaction for mobile autoplay
+  useEffect(() => {
+    if (isMobile && videoState !== 'playing') {
+      const handleFirstInteraction = () => {
+        attemptVideoPlay();
+        document.removeEventListener('touchstart', handleFirstInteraction);
+        document.removeEventListener('click', handleFirstInteraction);
+      };
+
+      document.addEventListener('touchstart', handleFirstInteraction, { passive: true });
+      document.addEventListener('click', handleFirstInteraction);
+
+      return () => {
+        document.removeEventListener('touchstart', handleFirstInteraction);
+        document.removeEventListener('click', handleFirstInteraction);
+      };
+    }
+  }, [isMobile, videoState, attemptVideoPlay]);
 
   const scrollToServices = () => {
     document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
@@ -45,35 +114,66 @@ const HeroSection = () => {
       className="relative h-screen w-full max-w-full overflow-hidden"
       aria-label="Hero section"
     >
-      {/* Video Background */}
+      {/* Video Background with Parallax */}
       <motion.div 
         style={{ y }}
         className="absolute inset-0 w-full h-full"
       >
-        {/* Fallback Image (shown on mobile or before video loads) */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${heroFallback})` }}
-        />
+        {/* Fallback Image - Always rendered first for instant display */}
+        <AnimatePresence>
+          {showFallback && (
+            <motion.div 
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, ease: 'easeInOut' }}
+              className="absolute inset-0 w-full h-full"
+            >
+              <img
+                src={heroFallback}
+                alt=""
+                className="w-full h-full object-cover"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
         
-        {/* Video Element */}
+        {/* Video Element - Optimized for performance */}
         <video
           ref={videoRef}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-            videoLoaded ? 'opacity-100' : 'opacity-0'
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+            videoState === 'playing' ? 'opacity-100' : 'opacity-0'
           }`}
           autoPlay
           muted
           loop
           playsInline
           preload="auto"
-          onLoadedData={() => setVideoLoaded(true)}
+          poster={heroFallback}
+          onCanPlay={handleVideoCanPlay}
+          onError={handleVideoError}
+          // Performance attributes
+          disablePictureInPicture
+          disableRemotePlayback
         >
           <source src={heroVideo} type="video/mp4" />
         </video>
         
-        {/* Dark Overlay - 60% opacity for perfect text readability */}
-        <div className="absolute inset-0 bg-background/60" />
+        {/* Dark Overlay - Cinematic gradient for text readability */}
+        <div 
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: `linear-gradient(
+              to bottom,
+              hsla(0, 0%, 4%, 0.5) 0%,
+              hsla(0, 0%, 4%, 0.4) 40%,
+              hsla(0, 0%, 4%, 0.5) 70%,
+              hsla(0, 0%, 4%, 0.7) 100%
+            )`
+          }}
+        />
       </motion.div>
 
       {/* Content */}
