@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { Zap, Settings, Trophy, Heart } from 'lucide-react';
 import AnimatedCounter from '@/components/AnimatedCounter';
+import { useSequentialCounters } from '@/hooks/use-sequential-counters';
 
 const differentials = [
   {
@@ -41,6 +42,13 @@ const differentials = [
 const PitStopSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  
+  // Sequential counters for 4 differentials
+  const { shouldCounterStart, handleCounterComplete } = useSequentialCounters({
+    totalCounters: 4,
+    isInView,
+    delayBetween: 250,
+  });
   
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -118,8 +126,8 @@ const PitStopSection = () => {
                           end={item.statValue}
                           suffix={item.statSuffix}
                           duration={2000}
-                          delay={index * 150}
-                          isInView={isInView}
+                          isInView={shouldCounterStart(index)}
+                          onComplete={() => handleCounterComplete(index)}
                         />
                       </div>
                       <div className="text-xs uppercase tracking-wider text-muted-foreground">

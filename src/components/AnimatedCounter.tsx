@@ -8,6 +8,7 @@ interface AnimatedCounterProps {
   delay?: number;
   isInView: boolean;
   className?: string;
+  onComplete?: () => void;
 }
 
 const AnimatedCounter = ({
@@ -18,6 +19,7 @@ const AnimatedCounter = ({
   delay = 0,
   isInView,
   className = '',
+  onComplete,
 }: AnimatedCounterProps) => {
   const { displayValue } = useCounterAnimation(isInView, {
     end,
@@ -25,6 +27,7 @@ const AnimatedCounter = ({
     delay,
     suffix,
     prefix,
+    onComplete,
   });
 
   return <span className={className}>{displayValue}</span>;
