@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import logohero from '@/assets/Logo-hero-section.png';
 
 const navLinks = [
   { href: "#services", label: "Serviços" },
@@ -44,13 +45,21 @@ const Navigation = () => {
           {/* Logo */}
           <a 
             href="#" 
-            className="text-2xl font-archivo speed-text tracking-tight-custom"
+            className="flex items-center gap-1 text-2xl font-archivo speed-text tracking-tight-custom group"
             onClick={(e) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
           >
-            VRUUM<span className="text-primary">FILMS</span>
+            <img 
+              src={logohero}
+              alt="Logo Vruum Films" 
+              className="relative -top-[4px] h-[1.7em] w-auto object-contain shrink-0" 
+            />
+
+            <span className="leading-none">
+              VRUUM<span className="text-primary">FILMS</span>
+            </span>
           </a>
 
           {/* Desktop Navigation */}
