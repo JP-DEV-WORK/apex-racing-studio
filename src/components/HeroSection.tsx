@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { ChevronDown } from 'lucide-react';
 import MagneticButton from './MagneticButton';
 import { useIsMobile } from '@/hooks/use-mobile';
-import heroVideo from '@/assets/hero-video.mp4';
+import heroVideo from '@/assets/hero-video-1.mp4';
 import heroFallback from '@/assets/hero-fallback.jpg';
 
 const HeroSection = () => {
@@ -143,7 +143,7 @@ const HeroSection = () => {
         {/* Video Element - Optimized for performance */}
         <video
           ref={videoRef}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+          className={`absolute inset-0 w-full h-full object-cover object-[center_40%] transition-opacity duration-700 ${
             videoState === 'playing' ? 'opacity-100' : 'opacity-0'
           }`}
           autoPlay
@@ -249,7 +249,7 @@ const HeroSection = () => {
       </motion.div>
 
       {/* Diagonal Cut Bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-background diagonal-cut-reverse" />
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-background diagonal-cut-reverse" />
     </section>
   );
 };

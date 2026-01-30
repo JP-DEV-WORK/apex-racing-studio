@@ -4,11 +4,12 @@ import { Instagram, Youtube, Mail, Send, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import WhatsAppButton from './WhatsAppButton';
+import logoAssinatura from '@/assets/logo-assinatura.png';
 
 const socialLinks = [
-  { icon: Instagram, href: "#", label: "Instagram" },
+  { icon: Instagram, href: "https://www.instagram.com/vruumfilms/", label: "Instagram" },
   { icon: Youtube, href: "#", label: "YouTube" },
-  { icon: Mail, href: "mailto:contato@vruumfilms.com", label: "Email" },
+  { icon: Mail, href: "mailto:vruumfilms@gmail.com", label: "Email" },
 ];
 
 const contactSchema = z.object({
@@ -16,7 +17,7 @@ const contactSchema = z.object({
   email: z.string().trim().email("Email inválido").max(255, "Email muito longo"),
   phone: z.string().trim().max(20, "Telefone muito longo").optional(),
   message: z.string().trim().min(1, "Mensagem é obrigatória").max(1000, "Mensagem muito longa"),
-  website: z.string().max(0).optional(), // Honeypot field - must be empty
+  website: z.string().max(0).optional(), 
 });
 
 const FooterSection = () => {
@@ -28,7 +29,7 @@ const FooterSection = () => {
     email: '',
     phone: '',
     message: '',
-    website: '', // Honeypot field
+    website: '', 
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,7 +58,7 @@ const FooterSection = () => {
             email: formData.email.trim(),
             phone: formData.phone?.trim() || null,
             message: formData.message.trim(),
-            website: formData.website, // Honeypot field
+            website: formData.website, 
           }),
         }
       );
@@ -153,7 +154,6 @@ const FooterSection = () => {
                 />
               </div>
 
-              {/* Honeypot field - hidden from users, only bots fill this */}
               <div 
                 aria-hidden="true" 
                 style={{ 
@@ -259,14 +259,14 @@ const FooterSection = () => {
             <div className="space-y-4 text-muted-foreground">
               <p>
                 <span className="text-primary">Email:</span>{' '}
-                <a href="mailto:contato@vruumfilms.com" className="hover-underline">
-                  contato@vruumfilms.com
+                <a href="mailto:vruumfilms@gmail.com" className="hover-underline">
+                  vruumfilms@gmail.com
                 </a>
               </p>
               <p>
                 <span className="text-primary">WhatsApp:</span>{' '}
-                <a href="https://wa.me/5511999999999" className="hover-underline">
-                  +55 (11) 99999-9999
+                <a href="https://wa.me/5511993060743" className="hover-underline">
+                  +55 (11) 9930-60743
                 </a>
               </p>
             </div>
@@ -278,14 +278,31 @@ const FooterSection = () => {
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-20 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4"
+          className="mt-20 pt-12 border-t border-border flex flex-col md:flex-row justify-between items-center gap-2"
         >
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} VRUUMFILMS. Todos os direitos reservados.
           </p>
-          <p className="text-sm text-muted-foreground">
-            Feito com <span className="text-primary">♥</span> e muita velocidade
-          </p>
+
+          <div className="flex flex-col items-center ">
+            <span className="text-sm text-muted-foreground">
+              Feito com <span className="text-primary">♥</span> e muita velocidade
+            </span>
+
+            <a
+              href="https://jpx-website.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="opacity-70 hover:opacity-100 transition-opacity"
+            >
+              <img
+                src={logoAssinatura}
+                alt="JPX"
+                className="h-8 w-auto"
+              />
+            </a>
+          </div>
+
         </motion.div>
       </div>
     </footer>
