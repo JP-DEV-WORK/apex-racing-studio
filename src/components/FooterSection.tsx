@@ -5,6 +5,8 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import WhatsAppButton from './WhatsAppButton';
 import logoAssinatura from '@/assets/logo-assinatura.png';
+import { usePhoneMask, getDigitsOnly } from '@/hooks/use-phone-mask';
+import { useEmailValidation } from '@/hooks/use-email-validation';
 
 const socialLinks = [
   { icon: Instagram, href: "https://www.instagram.com/vruumfilms/", label: "Instagram" },
@@ -26,17 +28,40 @@ const FooterSection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
-    phone: '',
     message: '',
     website: '', 
   });
+  
+  // Email validation with real-time feedback
+  const emailField = useEmailValidation();
+  
+  // Phone mask for Brazilian format
+  const phoneField = usePhoneMask();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Check email validation
+    if (!emailField.isValid) {
+      toast.error('Email inválido');
+      return;
+    }
+    
+    // Check phone validation (if not empty, must be complete)
+    if (!phoneField.isEmpty && !phoneField.isValid) {
+      toast.error('Telefone incompleto');
+      return;
+    }
+    
+    // Build form data for validation
+    const fullFormData = {
+      ...formData,
+      email: emailField.value,
+      phone: phoneField.displayValue,
+    };
+    
     // Validate form data
-    const validation = contactSchema.safeParse(formData);
+    const validation = contactSchema.safeParse(fullFormData);
     if (!validation.success) {
       const firstError = validation.error.errors[0];
       toast.error(firstError.message);
@@ -55,8 +80,8 @@ const FooterSection = () => {
           },
           body: JSON.stringify({
             name: formData.name.trim(),
-            email: formData.email.trim(),
-            phone: formData.phone?.trim() || null,
+            email: emailField.value.trim(),
+            phone: phoneField.displayValue?.trim() || null,
             message: formData.message.trim(),
             website: formData.website, 
           }),
@@ -70,7 +95,9 @@ const FooterSection = () => {
       }
 
       toast.success('Mensagem enviada com sucesso! Entraremos em contato em breve.');
-      setFormData({ name: '', email: '', phone: '', message: '', website: '' });
+      setFormData({ name: '', message: '', website: '' });
+      emailField.reset();
+      phoneField.reset();
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erro ao enviar mensagem. Tente novamente.';
       toast.error(errorMessage);
@@ -132,26 +159,48 @@ const FooterSection = () => {
                   <input
                     type="email"
                     name="email"
-                    value={formData.email}
-                    onChange={handleChange}
+                    value={emailField.value}
+                    onChange={emailField.onChange}
+                    onBlur={emailField.onBlur}
                     required
                     placeholder="Seu email"
-                    className="w-full bg-transparent border-b border-border py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                    className={`w-full bg-transparent border-b py-4 text-foreground placeholder:text-muted-foreground focus:outline-none transition-colors ${
+                      emailField.showError 
+                        ? 'border-destructive focus:border-destructive' 
+                        : 'border-border focus:border-primary'
+                    }`}
                     aria-label="Seu email"
+                    aria-invalid={emailField.showError}
                   />
+                  {emailField.showError && (
+                    <span className="absolute right-0 top-1/2 -translate-y-1/2 text-xs text-destructive">
+                      Email inválido
+                    </span>
+                  )}
                 </div>
               </div>
 
               <div className="relative">
                 <input
                   type="tel"
+                  inputMode="numeric"
                   name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
+                  value={phoneField.displayValue}
+                  onChange={phoneField.onChange}
                   placeholder="Telefone (opcional)"
-                  className="w-full bg-transparent border-b border-border py-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                  className={`w-full bg-transparent border-b py-4 text-foreground placeholder:text-muted-foreground focus:outline-none transition-colors ${
+                    !phoneField.isEmpty && !phoneField.isValid 
+                      ? 'border-destructive focus:border-destructive' 
+                      : 'border-border focus:border-primary'
+                  }`}
                   aria-label="Seu telefone (opcional)"
+                  aria-invalid={!phoneField.isEmpty && !phoneField.isValid}
                 />
+                {!phoneField.isEmpty && !phoneField.isValid && (
+                  <span className="absolute right-0 top-1/2 -translate-y-1/2 text-xs text-destructive">
+                    Telefone incompleto
+                  </span>
+                )}
               </div>
 
               <div 
