@@ -2,10 +2,18 @@ import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import InfinityCounter from '@/components/InfinityCounter';
+import { useSequentialCounters } from '@/hooks/use-sequential-counters';
 
 const TeamSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  
+  // Sequential counters: 0=5+ Anos, 1=100% Dedicação, 2=24/7, 3=Infinito
+  const { shouldCounterStart, handleCounterComplete } = useSequentialCounters({
+    totalCounters: 4,
+    isInView,
+    delayBetween: 250,
+  });
 
   return (
     <section 
@@ -49,8 +57,8 @@ const TeamSection = () => {
                   end={5}
                   suffix="+"
                   duration={1500}
-                  delay={400}
-                  isInView={isInView}
+                  isInView={shouldCounterStart(0)}
+                  onComplete={() => handleCounterComplete(0)}
                 />
               </div>
               <div className="text-sm uppercase tracking-wider text-primary-foreground/80">
@@ -102,7 +110,8 @@ const TeamSection = () => {
                     end={100}
                     suffix="%"
                     duration={2000}
-                    isInView={isInView}
+                    isInView={shouldCounterStart(1)}
+                    onComplete={() => handleCounterComplete(1)}
                   />
                 </div>
                 <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
@@ -115,8 +124,8 @@ const TeamSection = () => {
                     end={24}
                     suffix="/7"
                     duration={2000}
-                    delay={150}
-                    isInView={isInView}
+                    isInView={shouldCounterStart(2)}
+                    onComplete={() => handleCounterComplete(2)}
                   />
                 </div>
                 <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
@@ -126,7 +135,7 @@ const TeamSection = () => {
               <div className="text-center">
                 <div className="text-2xl md:text-3xl font-archivo font-black text-primary">
                   <InfinityCounter
-                    isInView={isInView}
+                    isInView={shouldCounterStart(3)}
                     duration={2200}
                   />
                 </div>

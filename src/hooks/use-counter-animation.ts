@@ -6,13 +6,14 @@ interface CounterOptions {
   delay?: number;
   suffix?: string;
   prefix?: string;
+  onComplete?: () => void;
 }
 
 export const useCounterAnimation = (
   isInView: boolean,
   options: CounterOptions
 ) => {
-  const { end, duration = 3000, delay = 0, suffix = '', prefix = '' } = options;
+  const { end, duration = 3000, delay = 0, suffix = '', prefix = '', onComplete } = options;
   const [count, setCount] = useState(0);
   const [showSuffix, setShowSuffix] = useState(false);
   const hasAnimated = useRef(false);
@@ -48,11 +49,12 @@ export const useCounterAnimation = (
       } else {
         setCount(end);
         setShowSuffix(true);
+        onComplete?.();
       }
     };
     
     requestAnimationFrame(animate);
-  }, [isInView, end, duration, delay]);
+  }, [isInView, end, duration, delay, onComplete]);
 
   return {
     displayValue: `${prefix}${count}${showSuffix ? suffix : ''}`,
