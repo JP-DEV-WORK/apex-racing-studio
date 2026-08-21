@@ -1,14 +1,31 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import InfinityCounter from '@/components/InfinityCounter';
 import { useSequentialCounters } from '@/hooks/use-sequential-counters';
+import ParticleImage from '@/components/ui/Particleimage';
 
 const TeamSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth <= 768 : false
+  );
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+
+    window.addEventListener('resize', checkMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
   
-  // Sequential counters: 0=5+ Anos, 1=100% Dedicação, 2=24/7, 3=Infinito
   const { shouldCounterStart, handleCounterComplete } = useSequentialCounters({
     totalCounters: 4,
     isInView,
@@ -30,15 +47,49 @@ const TeamSection = () => {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <div className="relative overflow-hidden group">
-              {/* Team Photo Placeholder */}
-              <div className="aspect-[4/3] bg-carbon bw-to-color">
-                <img 
-                  src="/placeholder.svg"
-                  alt="Equipe VRUUMFILMS em ação"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
+            <div className="relative group">
+              <div className="aspect-[4/3] relative">
+                <div className="absolute -inset-16 md:-inset-24">
+                  {isMobile ? (
+                    <motion.div
+                      className="w-full h-full flex items-center justify-center"
+                      initial={{ opacity: 0, scale: 0.85 }}
+                      animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                      transition={{ duration: 0.9, delay: 0.15, ease: "easeOut" }}
+                    >
+                      <img
+                        src="/favicon.ico"
+                        alt="Equipe VRUUMFILMS em ação"
+                        className="max-w-[55%] max-h-[55%] object-contain"
+                      />
+                    </motion.div>
+                  ) : (
+                    <ParticleImage
+                      imageConfig={{
+                        image: "/favicon.ico",
+                        mode: "fill",
+                      }}
+                      particleCount={70}
+                      particleSize={4}
+                      hoverEnabled
+                      hoverConfig={{
+                        hoverType: "roam",
+                        roamOpacity: 0.55,
+                        roamShape: "oval",
+                        transition: { duration: 1.2, ease: "easeInOut" },
+                      }}
+                      repulsionEnabled
+                      repulsionConfig={{
+                        repulsionMode: "outside",
+                        repulsionForce: 12,
+                        repulsionRadius: 70,
+                      }}
+                      width="100%"
+                      height="100%"
+                      aria-label="Equipe VRUUMFILMS em ação"
+                    />
+                  )}
+                </div>
               </div>
 
               {/* Red accent frame */}
@@ -50,9 +101,18 @@ const TeamSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="absolute -bottom-8 left-8 bg-primary p-6"
+              className="
+                absolute
+                -bottom-6
+                left-4
+                md:-bottom-8
+                md:left-8
+                bg-primary
+                p-4
+                md:p-6
+              "
             >
-              <div className="text-4xl font-archivo font-black text-primary-foreground">
+              <div className="text-3xl md:text-4xl font-archivo font-black text-primary-foreground leading-none">
                 <AnimatedCounter
                   end={5}
                   suffix="+"
@@ -61,10 +121,12 @@ const TeamSection = () => {
                   onComplete={() => handleCounterComplete(0)}
                 />
               </div>
-              <div className="text-sm uppercase tracking-wider text-primary-foreground/80">
+
+              <div className="text-[9px] md:text-sm uppercase tracking-wider text-primary-foreground/80 mt-1">
                 Anos de Experiência
               </div>
             </motion.div>
+
           </motion.div>
 
           {/* Content */}
