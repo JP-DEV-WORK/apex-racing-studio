@@ -51,11 +51,6 @@ const Navigation = () => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
           >
-            <img 
-              src={logohero}
-              alt="Logo Vruum Films" 
-              className="relative -top-[4px] h-[1.7em] w-auto object-contain shrink-0" 
-            />
 
             <span className="leading-none">
               VRUUM<span className="text-primary">FILMS</span>
