@@ -279,8 +279,7 @@ const FooterSection = () => {
                 VRUUM<span className="text-primary">FILMS</span>
               </h3>
               <p className="text-muted-foreground mt-4 max-w-md">
-                Media house de elite especializada em automobilismo. 
-                Capturamos a essência da velocidade com excelência cinematográfica.
+                Media house de elite focada em transformar ideias, histórias e momentos em experiências visuais. Criamos conteúdos com identidade, qualidade e impacto para marcas, eventos e projetos de diferentes segmentos.
               </p>
             </div>
 

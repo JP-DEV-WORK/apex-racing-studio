@@ -148,19 +148,24 @@ const TeamSection = () => {
 
             <div className="space-y-6 text-muted-foreground leading-relaxed">
               <p>
-                Somos um time de apaixonados por automobilismo e produção audiovisual. 
-                Cada membro da VRUUMFILMS traz consigo não apenas habilidades técnicas 
-                excepcionais, mas uma verdadeira paixão pela velocidade.
+                Somos uma equipe apaixonada pelo audiovisual e por tudo que envolve contar
+                histórias através de imagens. O automobilismo faz parte da nossa trajetória
+                e foi onde construímos boa parte da nossa experiência, mas nosso trabalho vai
+                muito além das pistas.
               </p>
+
               <p>
-                Desde cinegrafistas especializados em captura de alta velocidade até 
-                editores que entendem o ritmo de uma corrida, nossa equipe é composta 
-                por profissionais que vivem e respiram o mundo das pistas.
+                De eventos e marcas a projetos, conteúdos e momentos especiais, buscamos
+                transformar cada ideia em uma experiência visual que tenha identidade, ritmo
+                e propósito. Cada produção é pensada para transmitir uma mensagem e criar
+                uma conexão verdadeira com quem assiste.
               </p>
+
               <p>
-                Entendemos que cada projeto é único. Por isso, trabalhamos em estreita 
-                colaboração com nossos clientes para entregar conteúdo que não apenas 
-                atende, mas supera expectativas.
+                Acreditamos que cada projeto tem uma história diferente. Por isso, trabalhamos
+                lado a lado com nossos clientes para entender suas ideias e criar conteúdos
+                que realmente representem aquilo que querem transmitir, unindo criatividade,
+                técnica e paixão em cada produção.
               </p>
             </div>
 
