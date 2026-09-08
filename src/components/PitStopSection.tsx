@@ -16,7 +16,7 @@ const differentials = [
   {
     icon: Settings,
     title: "Equipamento",
-    description: "Câmeras profissionais, drones de alta velocidade e estabilizadores de ponta.",
+    description: "Equipamentos preparados para capturar cada detalhe, combinando qualidade de imagem, criatividade e técnica em cada produção.",
     statValue: 8,
     statSuffix: "K",
     statLabel: "Resolução Máxima",
@@ -24,7 +24,7 @@ const differentials = [
   {
     icon: Trophy,
     title: "Experiência",
-    description: "Anos de vivência no automobilismo, entendendo cada nuance da pista.",
+    description: "Mais de 2 anos no mercado e mais de 200 projetos realizados. Experiência construída na prática, transformando ideias em produções que entregam resultado.",
     statValue: 200,
     statSuffix: "+",
     statLabel: "Projetos Realizados",
@@ -32,7 +32,7 @@ const differentials = [
   {
     icon: Heart,
     title: "Paixão",
-    description: "Amamos velocidade tanto quanto você. Isso reflete em cada frame.",
+    description: "Transformamos nossa paixão pelo audiovisual em imagens que conectam, envolvem e fazem cada momento ganhar vida.",
     statValue: 100,
     statSuffix: "%",
     statLabel: "Dedicação",

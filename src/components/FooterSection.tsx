@@ -339,7 +339,7 @@ const FooterSection = () => {
             </span>
 
             <a
-              href="https://jpx-website.vercel.app/"
+              href="https://jpxdigital.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
               className="opacity-70 hover:opacity-100 transition-opacity"

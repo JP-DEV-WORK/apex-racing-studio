@@ -12,7 +12,7 @@ const services = [
   {
     icon: Camera,
     title: "Cobertura",
-    description: "Presença completa em eventos e corridas, documentando cada momento de adrenalina.",
+    description: "Presença completa em eventos e projetos, registrando cada momento com qualidade, criatividade e uma visão audiovisual profissional",
   },
   {
     icon: Scissors,
